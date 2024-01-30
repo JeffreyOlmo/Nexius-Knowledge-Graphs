@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>NEXIUS</title>
+    <style>
+        /* Add your CSS styling here */
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #2AA198;
+            background-image: url("{{ url_for('static', filename='GG2.jpeg') }}");
+            background-size: cover;
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-attachment: fixed; /* Optional: fixes the background */
+            min-height: 100vh; /* Ensure it covers the whole page */
+        }
+
+        #message-input::placeholder {
+        color: white;
+        opacity: 0.7; /* Firefox lowers the opacity by default, so set it to 1 if needed */
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        }
+
+        .header {
+            width: 100%;
+            top: 0;
+            padding: 10px 0px;
+            text-align: left;
+            background-color: transparent;
+            color: #FFFFFF;
+            z-index: 100;
+            position: fixed;
+        }
+
+        .header-words {
+            text-align: left;
+            padding: 60px;
+            font-size: 40px;
+            /* other styles */
+        }
+
+        .sub-header {
+            display: block; /* or inline-block, depending on your layout */
+            font-size: 7px; /* Smaller font size for the sub-header */
+            margin-top: 0px; /* Space above the sub-header */
+            margin-left:115px;
+            letter-spacing: 1px; /* Optional: Increase spacing between letters */
+            color: #FFFFFF; /* White color text */
+            width: 10%;
+            /* Add more styling if needed */
+        }
+
+        .main-container {
+            width: 100%;
+            padding-top: 100px; /* Give space for the header */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+
+        .tab-container {
+            font-weight: 300;
+            width: 90%;
+            background-color: transparent;
+            margin-top:0px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+            padding: 10px;
+            border-radius: 10px;
+            height: 75vh;
+            overflow-y: auto;
+        }
+
+        .chat-form-container {
+            width: 300px; /* Adjust based on preference */
+        }
+
+        /* Style for the input form */
+        #chat-form {
+            display: flex;
+            font-weight: 100;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 10px;
+            background: #00222B;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            color: #FFFFFF;
+            position:relative;
+            z-index: 1000;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* Style for the input field */
+        #message-input {
+            flex-grow: 1;
+            margin-right: 10px;
+            padding: 10px;
+            background: #012B36;
+            border: 1px solid #012B36;
+            border-radius: 5px;
+            color: #FFFFFF;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .chat-container {
+            text-align: center;
+            font-weight: 100;
+            width: 50%;
+            padding: 20px;
+            background-color: transparent;
+            height: 9vh;
+            overflow-y: auto;
+            margin-right: auto;
+            margin-left: auto;
+            border-radius: 10px;
+            box-shadow: none;
+        }
+
+        /* Style for the send button */
+        #chat-form button {
+            padding: 10px 15px;
+            background-color: #FFFFFF;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier', monospace;
+        }
+
+        .loading-indicator {
+            text-align: center; /* Center the dots */
+            position: relative;
+            color: #FFFFFF;
+            padding: 10px; /* Add some space around */
+            z-index: 10;
+        }
+
+        .dots {
+            display: inline-block;
+            font-size: 24px; /* Adjust size as needed */
+            animation: blink 1.4s infinite both;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+
+        .user-message, .ai-message {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #00182b;
+            text-align: right;
+            font-weight: 300;
+
+        }
+        .ai-message {
+            background-color: #00222B;
+            text-align: left;
+            font-weight: 300;
+        }
+
+        .loading-indicator {
+            text-align: center; /* Center the dots */
+            position: relative;
+            padding: 10px; /* Add some space around */
+            z-index: 10;
+        }
+
+        .dots {
+            display: inline-block;
+            font-size: 24px; /* Adjust size as needed */
+            animation: blink 1.4s infinite both;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span class="header-words">NEXIUS<span class="sub-header">KNOWLEDGE GRAPHS</span></span></h1>
+    </div>
+    <div class="main-container" id="main-container">
+        <div class="chat-container">
+            <form id="chat-form">
+                <input type="text" id="message-input" placeholder="Enter the theme of your graph here" autocomplete="off">
+                <button type="submit">Send</button>
+            </form>
+            <div id="chat-container">
+                <!-- Chat with AI will be here -->
+            </div>
+        </div>
+        <div class="tab-container" id="tab-container">
+            <iframe src="https://workspace-preview.neo4j.io/workspace/query"  style="width:100%; height:100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.4);"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let isFirstMessage = true; // Flag to track the first message
+
+        document.getElementById('chat-form').onsubmit = function(e) {
+            e.preventDefault();
+            let message = document.getElementById('message-input').value;
+            let lastUserMessage = message; // Store the last user message
+
+            // Insert the loading indicator
+            let loadingIndicator = document.createElement('div');
+            loadingIndicator.innerHTML = '<span class="dots">...</span>';
+            loadingIndicator.className = 'loading-indicator';
+            document.getElementById('chat-container').appendChild(loadingIndicator);
+
+
+            fetch('/generate_graph', {
+                method: 'POST',
+                body: new URLSearchParams('message=' + encodeURIComponent(message)),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            })
+            .finally(() => {
+                // Remove the loading indicator regardless of the fetch outcome
+                document.getElementById('chat-container').removeChild(loadingIndicator);
+            });
+        };
+    </script>
+
+</body>
+</html>
