@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>NEXIUS</title>
     <style>
-        /* Add your CSS styling here */
 
         @keyframes fadeIn {
             from {
@@ -56,23 +55,21 @@
             text-align: left;
             padding: 60px;
             font-size: 40px;
-            /* other styles */
         }
 
         .sub-header {
-            display: block; /* or inline-block, depending on your layout */
-            font-size: 7px; /* Smaller font size for the sub-header */
-            margin-top: 0px; /* Space above the sub-header */
+            display: block; 
+            font-size: 7px; 
+            margin-top: 0px; 
             margin-left:115px;
-            letter-spacing: 1px; /* Optional: Increase spacing between letters */
-            color: #FFFFFF; /* White color text */
+            letter-spacing: 1px; 
+            color: #FFFFFF; 
             width: 10%;
-            /* Add more styling if needed */
         }
 
         .main-container {
             width: 100%;
-            padding-top: 100px; /* Give space for the header */
+            padding-top: 100px; 
             display: flex;
             flex-direction: column;
             justify-content: space-around;
@@ -94,10 +91,10 @@
         }
 
         .chat-form-container {
-            width: 300px; /* Adjust based on preference */
+            width: 300px;
         }
 
-        /* Style for the input form */
+
         #chat-form {
             display: flex;
             font-weight: 100;
@@ -114,7 +111,7 @@
             font-weight: 600;
         }
 
-        /* Style for the input field */
+
         #message-input {
             flex-grow: 1;
             margin-right: 10px;
@@ -141,7 +138,6 @@
             box-shadow: none;
         }
 
-        /* Style for the send button */
         #chat-form button {
             padding: 10px 15px;
             background-color: #FFFFFF;
@@ -153,16 +149,16 @@
         }
 
         .loading-indicator {
-            text-align: center; /* Center the dots */
+            text-align: center; 
             position: relative;
             color: #FFFFFF;
-            padding: 10px; /* Add some space around */
+            padding: 10px; 
             z-index: 10;
         }
 
         .dots {
             display: inline-block;
-            font-size: 24px; /* Adjust size as needed */
+            font-size: 24px; 
             animation: blink 1.4s infinite both;
         }
 
@@ -190,15 +186,15 @@
         }
 
         .loading-indicator {
-            text-align: center; /* Center the dots */
+            text-align: center; 
             position: relative;
-            padding: 10px; /* Add some space around */
+            padding: 10px;
             z-index: 10;
         }
 
         .dots {
             display: inline-block;
-            font-size: 24px; /* Adjust size as needed */
+            font-size: 24px; 
             animation: blink 1.4s infinite both;
         }
 
@@ -228,14 +224,13 @@
     </div>
 
     <script>
-        let isFirstMessage = true; // Flag to track the first message
 
         document.getElementById('chat-form').onsubmit = function(e) {
             e.preventDefault();
             let message = document.getElementById('message-input').value;
-            let lastUserMessage = message; // Store the last user message
+            let lastUserMessage = message;
 
-            // Insert the loading indicator
+
             let loadingIndicator = document.createElement('div');
             loadingIndicator.innerHTML = '<span class="dots">...</span>';
             loadingIndicator.className = 'loading-indicator';
