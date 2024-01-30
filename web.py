@@ -12,8 +12,7 @@ import json
 load_dotenv("key.env")
 
 app = Flask(__name__)
-client = OpenAI(api_key="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")
-BOOKS_API_KEY = 'AIzaSyB7mrvkJPyjFRNLRPNyeSRt3W_HXsEVk-Q'
+client = OpenAI(api_key="OpenAI_Key")
 graph_thread = client.beta.threads.create()
 chat_thread = client.beta.threads.create()
 first_message = None
@@ -74,8 +73,8 @@ def generate_graph():
 
 @app.route('/ask_rest', methods=['POST'])
 def ask_neo4j(node_list, edge_list):
-    conn = Neo4jConnection(uri="bolt://localhost:7687", user="neo4j",
-                           pwd="cookie14")
+    conn = Neo4jConnection(uri="INSERT_URL", user="INSERT_USERNAME",
+                           pwd="INSERT_PASSWORD")
 
     delete_stuff = """MATCH(n) 
     DETACH DELETE n"""
