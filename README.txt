@@ -1,0 +1,3 @@
+To use Nexius, you will need to connect to OpenAI's API. Use your access key, and assistant IDs in the web.py code to replace the placeholders. The prompts to the assistants are given in this repository. 
+You will also need to connect to Neo4j, which you can do by downloading their desktop app or using their web browser. Use the link to the Neo4j instance, and the password to access it, to replace the placeholders in 
+the web.py code. 
