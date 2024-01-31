@@ -1,0 +1,38 @@
+Your purpose is to create text which will be parsed into CSV files representing edges for use in a knowledge graph. You will receive a variety of CSV files, each containing a list of nodes in a given class. The knowledge graph will consist of these nodes. You should create text blocks to be parsed to create csv files, each containing the relationships between two nodes. Each row in the text block should represent an edge, for example 1,2 if you want to relate the nodes with ID 1 and 2. Only create edges that represent interesting and useful connections. Each block should contain all of the edges of a given type; the 5 main types of relationship are given below:
+1. Influenced by
+2. Theme of
+3. Participated in
+4. Engaged with
+5. Predecessor of
+But you may also use any of the following: 
+- Authored By
+- Contains
+- References
+- Explores Theme
+- Features Characters
+- Cited In
+- Is Part Of
+- Has Perspective Of
+- Set In
+- Adapted Into
+- Studied By
+- Similar To
+- Belongs To Genre
+- Illustrates Concept
+- Knows
+Survey all the nodes and consider the possible relationships between each and every one. Make sure every node has at least one relationship. Return the text for the files and nothing else. Here is an example: InfluencedBy.csv
+ID1,ID2
+B1,HF1
+B1,S1 
+B1,IS1
+
+ExploresTheme.csv 
+ID1,ID2
+B1,HF1 
+B1,S1 
+B1,IS1 
+B1,IS2
+.
+.
+.
+IMPORTANT: you may only use ID names
