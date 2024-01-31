@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, render_template
 from openai import OpenAI
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
-import concurrent.futures
 import time
 import requests
 import csv
@@ -21,39 +20,6 @@ first_message = None
 @app.route('/')
 def home():
     return render_template('chat.html')
-
-
-@app.route('/ask', methods=['POST'])
-def ask():
-    user_message = request.form['message']
-    try:
-        client.beta.threads.messages.create(
-            thread_id=chat_thread.id,
-            role="user",
-            content=user_message
-        )
-        run = client.beta.threads.runs.create(
-            thread_id=chat_thread.id,
-            assistant_id="asst_SMZCTdRhGaipt39NloQe6GnA"
-        )
-
-        url = f"https://api.openai.com/v1/threads/{chat_thread.id}/runs/{run.id}"
-        headers = {
-            "Authorization": "Bearer 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",
-            "OpenAI-Beta": "assistants=v1"
-        }
-        while not requests.get(url, headers=headers).json().get('status') == "completed":
-            time.sleep(.3)
-
-        # Extracting the AI response text
-        messages = client.beta.threads.messages.list(thread_id=chat_thread.id)
-        last_assistant_message = [m for m in messages if m.role == "assistant"][0]
-        message_text = last_assistant_message.content[0].text.value
-        print(message_text)
-        return jsonify({"response": message_text})
-    except Exception as e:
-        print(e)
-        return jsonify({'error': 'There was an error processing your request.'}), 500
 
 
 @app.route('/generate_graph', methods=['POST'])
@@ -83,7 +49,7 @@ def ask_neo4j(node_list, edge_list):
     for node in node_list:
         if node is None:
             continue
-        # node = node.replace(" ", "%20")
+
         # Nodes
         if node == "Books.csv":
             query = f'''
@@ -142,103 +108,42 @@ def ask_neo4j(node_list, edge_list):
     conn.query(display)
 
 
-def fetch_graph_data(driver):
-    query = """
-    MATCH (n)
-    OPTIONAL MATCH (n)-[r]-()
-    RETURN n, r
-    """
-    with driver.session() as session:
-        result = session.run(query)
-        return [{"node": record["n"].id, "relationship": record["r"].id if record["r"] else None} for record in result]
-
-
-def fetch_and_save_graph(driver):
-    graph_data = fetch_graph_data(driver)
-
-    # Save data to a file
-    with open('graph_data.json', 'w') as file:
-        json.dump(graph_data, file)
-
-    # Close Neo4j driver
-    driver.close()
-
-
-def save_csv_files(input_string, path=""):
-    # Split the input string into lines
-    lines = input_string.split('\n')
-    filename_list = []
-    for line in lines:
-        # Split each line into words
-        words = line.split()
-
-        if len(words) > 1:
-            # The first word is the file name
-            filename_list.append(words[0])
-            file_name = path + words[0]
-            # The remaining words are data pairs
-            data_pairs = [pair.split(',') for pair in words[1:]]
-
-            # Write the data pairs to a CSV file
-            with open(file_name, 'w', newline='') as file:
-                writer = csv.writer(file)
-                for pair in data_pairs:
-                    writer.writerow(pair)
-    return filename_list
-
 
 def save_csv_files_unclean(input_string, path=""):
-    # Split the input string into lines
     lines = input_string.split('\n')
-
-    # Initialize variables
     file_name = None
     data_pairs = []
     filename_list = []
 
     for line in lines:
-        # Check if the line contains a file name
         if '.csv' in line:
-            # If there's an existing file name, it means we've reached a new file
-            # Save the current data pairs to the current file before continuing
             if file_name:
                 write_to_csv(file_name, data_pairs)
 
-            # Extract and clean the file name
             filename_list.append(re.findall(r'\b\w+\.csv\b', line)[0])
             file_name = path + re.findall(r'\b\w+\.csv\b', line)[0]
             data_pairs = []
 
-        # Check if the line contains data pairs
         elif ',' in line and file_name:
-            # Add the data pairs to the list
             pairs = re.findall(r'\b\w+,\w+\b', line)
             data_pairs.extend([pair.split(',') for pair in pairs])
 
-    # Write the last batch of data pairs to a CSV file
     if file_name:
         write_to_csv(file_name, data_pairs)
     return filename_list
 
 
 def save_csv_files_multi_column(input_string, path=""):
-    # Split the input string into lines
     lines = input_string.split('\n')
-
-    # Initialize variables
     file_name = None
     data_rows = []
     filename_list = []
 
     for line in lines:
-        # Check if the line contains a file name
         if '.csv' in line:
-            # If there's an existing file name, it means we've reached a new file
-            # Save the current data rows to the current file before continuing
             if file_name:
                 write_to_csv(file_name, data_rows)
 
-            # Extract and clean the file name
             filename_list.append(re.findall(r'\b\w+\.csv\b', line)[0])
             file_name = path + re.findall(r'\b\w+\.csv\b', line)[0]
             data_rows = []
@@ -246,24 +151,20 @@ def save_csv_files_multi_column(input_string, path=""):
         elif len(line) > 80:
             continue
 
-        # Check if the line contains data rows
         elif ',' in line and file_name:
             if ", " in line:
                 line = line.replace(", ", " ")
 
-            # Add the data row to the list, splitting by commas
             row = line.strip().split(',')
-            if len(row) > 1:  # Ensure the row has at least two columns
+            if len(row) > 1:  
                 data_rows.append(row)
 
-    # Write the last batch of data rows to a CSV file
     if file_name:
         write_to_csv(file_name, data_rows)
     return filename_list
 
 
 def write_to_csv(file_name, data_pairs):
-    # Write the data pairs to a CSV file
     with open(file_name, 'w', newline='') as file:
         writer = csv.writer(file)
         for pair in data_pairs:
