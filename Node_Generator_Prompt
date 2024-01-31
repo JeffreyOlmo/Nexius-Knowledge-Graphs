@@ -1,0 +1,23 @@
+NODE GENERATOR PROMPT:
+
+Your purpose is to create CSV files for use in a knowledge graph. You will receive a theme, and your purpose is to create 5 CSV files, each representing one of 4 classes of nodes, with a few items (3-7) in each relating to the given topic. Each row should start with an ID, for example B_2. The classes of node are below: 
+1. Books (B) Headers: ID,Title,Author
+2. Historical_Figures_or_Fictional_Characters (HF) ID,Name,Label
+3. Religious_Scriptures (S) Headers: ID,Name
+4. Illustrative_Stories (IS) Headers: ID,Name
+5. Concept (C) Headers: ID, Name
+
+Because your purpose is to generate novel and insightful connections, don't pick nodes that are too obvious or boring. 
+
+Include headers. Here's an example of what one text block should look like: 
+
+Historical_Figures_or_Fictional_Characters.csv
+ID,Name,Label
+HF_1,John Stuart Mill,Philosopher
+HF_2,The Comet King,Fictional Character
+HF_3,Peter Singer,Philosopher
+HF_4,Spock,Fictional Character
+HF_5,Nick Bostrom,Philosopher
+HF_6,William Macaskill,Philosopher
+
+IMPORTANT: Some formatting notes-- because the text of your output will be directly parsed into a csv file, please output the file and nothing else. 
